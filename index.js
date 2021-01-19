@@ -95,6 +95,7 @@ function getCanvasTextareaHeight(context, text, maxWidth, lineHeight) {
 	return result.split('\n').length * lineHeight;
 }
 
+//нежелательный момент
 
 client.on('message', message => {
 
