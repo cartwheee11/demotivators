@@ -136,10 +136,13 @@ client.on('message', message => {
 			c.textAlign = 'center';
 			c.textBaseline = 'top';
 	
-			//Наносим изображение
+			//Наносим изображениеc
+			c.strokeStyle = 'white';
 			c.fillStyle = 'black';
-			c.fillRect(0, 0, canvas.width, canvas.height)
-			c.drawImage(obtainedImage, CONTAINER_PADDING, CONTAINER_PADDING, formatedImageWidth, formatedImageHeight);
+
+			c.fillRect(0, 0, canvas.width, canvas.height);
+			c.strokeRect(CONTAINER_PADDING - 5, CONTAINER_PADDING - 5, formatedImageWidth + 10, formatedImageHeight + 10);
+			c.drawImage(obtainedImage, CONTAINER_PADDING, CONTAINER_PADDING, formatedImageWidth, formatedImageHeight);			
 	
 			//Наносим текст заголовка
 			c.fillStyle = 'white';
