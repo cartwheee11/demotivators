@@ -115,6 +115,8 @@ client.on('message', message => {
 		text = text.map(elem => elem.trim());
 		Canvas.loadImage(obtainedImageURL).then(obtainedImage => {
 			
+			message.delete();
+
 			c.font = TITLE_FONT;
 			let title = text[0];
 			// console.log(title);
@@ -147,7 +149,6 @@ client.on('message', message => {
 			c.font = SUBTITLE_FONT;
 			printCanvasTextarea(c, subtitle, canvas.width / 2, CONTAINER_PADDING + formatedImageHeight + TEXT_MARGIN_TOP * 2 + titleHeight, CONTENT_WIDTH, SUBTITLE_LINE_HEIGHT);
 	
-			
 			let replyText = getRandHello(HELLOS);
 			message.reply(replyText, { files: [ canvas.toBuffer() ] })
 		});
@@ -155,5 +156,4 @@ client.on('message', message => {
 		message.reply('Это так не работает');
 	}
 
-	
 });
