@@ -2,11 +2,12 @@
 const config = require('./config.json');
 const Discord = require('discord.js');
 const Canvas = require('canvas');
+const fs = require('fs');
 
 Canvas.registerFont('fonts/PTSerif-Regular.ttf', { family: 'kek-Times' });
 Canvas.registerFont('fonts/Roboto-Regular.ttf', { family: 'kek-Arial' });
 
-let client = new Discord.Client({ intents: [ Discord.Intents.FLAGS.GUILD_MESSAGES ] });
+let client = new Discord.Client({ intents: [ Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS ] });
 
 client.login(config.BOT_TOKEN);
 
@@ -28,6 +29,12 @@ const HELLOS = [
 	'Деееееемотиватор готов:',
 	'Кек',
 	'Лол'
+]
+
+const DESCS = [
+	'Афигенно -_-',
+	'Нет слов 😍',
+	'Бред...'
 ]
 
 function getRandomArrayElement(arr) {
@@ -112,19 +119,28 @@ function getCanvasTextareaHeight(context, text, maxWidth, lineHeight) {
 	return result.split('\n').length * lineHeight;
 }
 
-client.on('message', message => {
+client.on('ready', () => {
+	function setActivity() {
+		client.user.setPresence({ activities: [{ name: '-dem help >:D' }] })
+	}
 
+	setActivity();
+	setInterval(setActivity, 300000)
+})
+
+client.on('messageCreate', message => {
 	try{
 		if(!message.content.startsWith(PREFIX)) return;
 		if(message.author.bot) return;
 		let textBody = message.content.replace(PREFIX, '').trim();
 		if(textBody == '') {
-			message.delete();
-			message.reply('Нет текста — нет мема');
+			message.reply('Нет текста — нет мема').then(() => {
+				message.delete();
+			})
 			return;
 		}
 		//получаем текст из сообщения
-		let tmp = textBody.split('|');
+		let tmp = textBody.replace('|', 'ƒ©˙∆˚¬…').split('ƒ©˙∆˚¬…');
 		tmp = tmp.map(elem => { elem.trim(); if (elem != '') return elem });
 		let text = [];
 
@@ -134,25 +150,34 @@ client.on('message', message => {
 				if(elem != '')
 					text.push(elem);
 			}
-			
 		});
 
-		if(text.length > 2) {
-			for(let i = 2; i < text.length; i++) {
-				text[1] += (' | ' + text[i]);
-			}
-		}
-
 		if(!message.attachments.size)  {
-			message.delete();
-			message.reply(getRandomArrayElement(NO_IMAGE_ERRORS));
+
+			if (textBody == 'help') {
+				// message.reply('ди нах')
+
+				let embed = new Discord.MessageEmbed();
+				embed.setTitle('Как пользоваться -dem:')
+				embed.setDescription('1) Прикрепляешь картинку 🖼️\n 2) Пишешь типа -dem <text 1> | <text 2> 😚\n 3) Можно и без <text 2> 😉\n 4) Профит 😍')
+				embed.setColor('#faa81a');
+				message.reply({
+					embeds: [ embed ]
+				})
+			} else {
+				message.reply(getRandomArrayElement(NO_IMAGE_ERRORS)).then(() => {
+					message.delete();
+				})
+			}
 			return;
 		}
 
 		let attachment = Array.from(message.attachments)[0][1];
 		if(!attachment.height || !attachment.width) {
-			message.delete();
-			message.reply(getRandomArrayElement(INCORRECT_ATTACHMENT_ERRORS));
+			message.reply(getRandomArrayElement(INCORRECT_ATTACHMENT_ERRORS)).then(() => {
+				message.delete();
+			})
+			
 			return;
 		}
 
@@ -166,7 +191,7 @@ client.on('message', message => {
 		
 		Canvas.loadImage(obtainedImageURL).then(obtainedImage => {
 			
-			message.delete();
+			
 
 			c.font = TITLE_FONT;
 			let title = text[0];
@@ -211,13 +236,31 @@ client.on('message', message => {
 				c.font = SUBTITLE_FONT;
 				printCanvasTextarea(c, subtitle, canvas.width / 2, CONTAINER_PADDING + formatedImageHeight + TEXT_MARGIN_TOP * 2 + titleHeight, CONTENT_WIDTH, SUBTITLE_LINE_HEIGHT);
 			}
-	
+
 			let replyText = getRandHello(HELLOS);
-			message.reply(replyText, { files: [ canvas.toBuffer() ] })
+
+			const embed = new Discord.MessageEmbed();
+			let attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'image.png')
+			
+			embed.setTitle(replyText);
+			embed.setDescription(getRandomArrayElement(DESCS));
+			embed.setColor('#faa81a');
+			embed.setImage('attachment://image.png');
+			embed.setFooter({
+				text: 'Прикол заказал ' + message.author.tag,
+				iconURL: message.author.displayAvatarURL()
+			});
+			message.channel.send({
+				embeds: [ embed ],
+				files: [ attachment ]
+			})
+			
 		});
-	} catch {
-		message.reply('Некорректная команда');
-		message.delete();
+	} catch(e) {
+		console.log(e)
+		message.reply('Некорректная команда').then(() => {
+			message.delete();
+		})
 	}
 
 });
