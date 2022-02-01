@@ -2,20 +2,19 @@
 const config = require('./config.json');
 const Discord = require('discord.js');
 const Canvas = require('canvas');
-const fs = require('fs');
-const { CLOSING } = require('ws');
 
 Canvas.registerFont('fonts/PTSerif-Regular.ttf', { family: 'kek-Times' });
 Canvas.registerFont('fonts/Roboto-Regular.ttf', { family: 'kek-Arial' });
 
-let client = new Discord.Client();
+let client = new Discord.Client({ intents: [ Discord.Intents.FLAGS.GUILD_MESSAGES ] });
+
 client.login(config.BOT_TOKEN);
 
 const NO_IMAGE_ERRORS = [
 	'Вы не прикрепили картинку, обязательно сделайте это!',
 	'У вас что, нет картинки? Сбросьте мне по почте',
 	'Эмм, а картинка?',
-	'Вы забыли про картинку'
+	'Вы забыли про картинку! >:c'
 ]
 
 const INCORRECT_ATTACHMENT_ERRORS = [
@@ -112,7 +111,6 @@ function getCanvasTextareaHeight(context, text, maxWidth, lineHeight) {
 
 	return result.split('\n').length * lineHeight;
 }
-
 
 client.on('message', message => {
 
