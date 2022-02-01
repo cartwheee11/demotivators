@@ -121,7 +121,7 @@ function getCanvasTextareaHeight(context, text, maxWidth, lineHeight) {
 
 client.on('ready', () => {
 	function setActivity() {
-		client.user.setPresence({ activities: [{ name: '-dem help >:D' }] })
+		client.user.setPresence({ activities: [{ name: '-dem help' }] })
 	}
 
 	setActivity();
@@ -158,8 +158,8 @@ client.on('messageCreate', message => {
 				// message.reply('ди нах')
 
 				let embed = new Discord.MessageEmbed();
-				embed.setTitle('Как пользоваться -dem:')
-				embed.setDescription('1) Прикрепляешь картинку 🖼️\n 2) Пишешь типа -dem <text 1> | <text 2> 😚\n 3) Можно и без <text 2> 😉\n 4) Профит 😍')
+				embed.setTitle('Чтобы создать демотиватор, нужно:')
+				embed.setDescription('1) Прикрепить картиночку 🖼️\n 2) Написать -dem <текст 1> | <текст 2> 😚\n 3) Можно и без <текст 2> 😉\n 4) Профит 😍')
 				embed.setColor('#faa81a');
 				message.reply({
 					embeds: [ embed ]
