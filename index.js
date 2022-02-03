@@ -163,7 +163,7 @@ client.on('messageCreate', message => {
 				embed.setColor('#faa81a');
 				message.reply({
 					embeds: [ embed ]
-				})
+				});
 			} else {
 				message.reply(getRandomArrayElement(NO_IMAGE_ERRORS)).then(() => {
 					message.delete();
@@ -253,6 +253,8 @@ client.on('messageCreate', message => {
 			message.channel.send({
 				embeds: [ embed ],
 				files: [ attachment ]
+			}).then(() => {
+				message.delete();
 			})
 			
 		});
